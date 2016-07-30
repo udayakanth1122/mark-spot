@@ -22,15 +22,9 @@ temp/
 typings/
 www/build/
 $RECYCLE.BIN/
-.io-config.json
-ionic.config.json
-publish-key.pub
 
 .DS_Store
 Thumbs.db
-UserInterfaceState.xcuserstate
 
 platforms
 plugins
-
-.travis/travis_rsa.pem
