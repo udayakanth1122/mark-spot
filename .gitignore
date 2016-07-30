@@ -15,7 +15,6 @@ coverage/
 bower_components/
 dist/
 hooks/after_prepare/010_add_platform_class.js
-resources/
 node_modules/
 tmp/
 temp/
@@ -26,4 +25,3 @@ $RECYCLE.BIN/
 Thumbs.db
 
 platforms
-plugins
