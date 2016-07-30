@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-navbar class="bar-positive theme" paradise>
+    <ion-title align-title="center">Mark-Spot</ion-title>
+    <ion-buttons end>
+      <button (click)="addMarker()">
+        <ion-icon name="pin"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
+<ion-content padding class="home user-page" has-header="true">
+  <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <ion-card>
+    <ion-item id="map" [ngStyle]="{'min-height': '250px', 'background': '#F8CDDA'}">
+    </ion-item>
+    <button fab fab-right fab-top (click)="getCurrentPosition()" small>
+      <ion-icon name="compass"></ion-icon>
+    </button>
+  </ion-card>
+  <ion-card>
+    <ion-card-header [ngStyle]="{'background': '#F8CDDA', 'color': '#1D2B64'}" align-title="center">
+      Spots available near you.
+    </ion-card-header>
+    <ion-list>
+      <ion-item *ngFor="let key of addressArr" [value]="key.address" [ngStyle]="{'background': '#F8CDDA', 'font-size': '90%'}" class="wrap">
+        <ion-icon name="ionic" item-left class="icon-color"></ion-icon>
+        <h2 [ngStyle]="{'color': '#1D2B64'}">{{key.address}}</h2>
+        <h2></h2>
+        <h3 [ngStyle]="{'font-size': '80%'}">{{key.distance}} miles</h3>
+        <button primary clear item-right (click)="startNavigation(key.destinationCoords)">
+          <ion-icon name="ios-navigate"></ion-icon>
+        </button>
+      </ion-item>
+    </ion-list>
+  </ion-card>
+</ion-content>
