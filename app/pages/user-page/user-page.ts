@@ -3,6 +3,7 @@ import {Loading, NavController, Alert} from 'ionic-angular';
 import {Geolocation} from 'ionic-native';
 import {LaunchNavigator, LaunchNavigatorOptions} from 'ionic-native';
 import {HomeService} from '../home-page/home-page-service';
+import {HomePage} from '../home-page/home-page';
 
 enableProdMode();
 
@@ -321,5 +322,10 @@ export class UserPage {
       console.log('Async operation has ended');
       refresher.complete();
     }, 2000);
+  }
+
+  login() {
+    console.log('login...');
+    this.navigate.push(HomePage);
   }
 }

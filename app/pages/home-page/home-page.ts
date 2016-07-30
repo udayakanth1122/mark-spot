@@ -3,6 +3,7 @@ import {Loading, NavController} from 'ionic-angular';
 import {UserPage} from '../user-page/user-page';
 import {Geolocation} from 'ionic-native';
 import {HomeService} from './home-page-service';
+import {AuthService} from '../../services/auth/auth';
 
 @Component({
   templateUrl: 'build/pages/home-page/home-page.html'

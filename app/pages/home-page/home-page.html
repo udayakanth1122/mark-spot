@@ -1,20 +1,26 @@
 <ion-header>
-  <ion-navbar class="bar-positive theme" paradise>
-    <ion-title align-title="center">Mark-Spot</ion-title>
-  </ion-navbar>
+    <ion-navbar class="bar-positive theme" paradise>
+        <ion-title align-title="center">Mark-Spot</ion-title>
+    </ion-navbar>
 </ion-header>
 
 <ion-content padding class="home user-page" has-header="true">
-  <ion-row>
-    <ion-col width-50>
-      <ion-card class="transparent">
-        <button class="btn btn-primary btn-margin" (click)="auth.login()" *ngIf="!auth.authenticated()">Log In</button>
-      </ion-card>
-    </ion-col>
-    <ion-col width-50>
-      <ion-card>
-        <button class="btn btn-primary btn-margin" (click)="auth.logout()" *ngIf="auth.authenticated()">Log Out</button>
-      </ion-card>
-    </ion-col>
-  </ion-row>
+    <button block (click)="auth.login()">Login</button>
 </ion-content>
+
+<!--<ion-content padding class="home user-page" has-header="true" *ngIf="!auth.authenticated()">
+    <button block (click)="auth.login()">Login</button>
+</ion-content>-->
+
+<!--<ion-content padding class="home user-page" has-header="true" *ngIf="auth.authenticated()">
+    <ion-card>
+        <ion-item *ngIf="auth.user">
+            <ion-avatar item-left>
+                <img src="{{ auth.user.picture }}">
+            </ion-avatar>
+            <h2>{{ auth.user.nickname }}</h2>
+            <p>{{ auth.user.email }}</p>
+        </ion-item>
+    </ion-card>
+    <button block (click)="auth.logout()">Logout</button>
+</ion-content>-->
