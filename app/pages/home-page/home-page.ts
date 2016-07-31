@@ -14,7 +14,7 @@ export class HomePage {
   map: any;
   private homeService: HomeService;
 
-  constructor(nav: NavController, homeService: HomeService) {
+  constructor(nav: NavController, homeService: HomeService, private auth: AuthService) {
     this.navigate = nav;
     this.map = null;
     this.homeService = homeService;

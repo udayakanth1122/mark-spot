@@ -4,16 +4,13 @@
     </ion-navbar>
 </ion-header>
 
-<ion-content padding class="home user-page" has-header="true">
+
+<ion-content padding class="home user-page" has-header="true" *ngIf="!auth.authenticated()">
     <button block (click)="auth.login()">Login</button>
 </ion-content>
 
-<!--<ion-content padding class="home user-page" has-header="true" *ngIf="!auth.authenticated()">
-    <button block (click)="auth.login()">Login</button>
-</ion-content>-->
-
-<!--<ion-content padding class="home user-page" has-header="true" *ngIf="auth.authenticated()">
-    <ion-card>
+<ion-content padding class="home user-page" has-header="true" *ngIf="auth.authenticated()">
+    <ion-card [ngStyle]="{'margin-top': '68px'}">
         <ion-item *ngIf="auth.user">
             <ion-avatar item-left>
                 <img src="{{ auth.user.picture }}">
@@ -21,6 +18,7 @@
             <h2>{{ auth.user.nickname }}</h2>
             <p>{{ auth.user.email }}</p>
         </ion-item>
+        <button block (click)="auth.logout()">Logout</button>
     </ion-card>
-    <button block (click)="auth.logout()">Logout</button>
-</ion-content>-->
+
+</ion-content>

@@ -4,9 +4,9 @@ import {StatusBar, Splashscreen} from 'ionic-native';
 import {HomePage} from './pages/home-page/home-page';
 import {UserPage} from './pages/user-page/user-page';
 import {HomeService} from './pages/home-page/home-page-service';
-import {AuthService} from './services/auth/auth';
 import {Http} from '@angular/http';
 import {AuthHttp, AuthConfig} from 'angular2-jwt';
+import {AuthService} from './services/auth/auth';
 
 
 @Component({
@@ -16,7 +16,7 @@ export class MyApp {
 
     private rootPage: any;
     private splashScreen: any;
-    constructor(private platform: Platform) {
+    constructor(private platform: Platform, private auth: AuthService) {
         this.rootPage = UserPage;
         this.platform = platform;
         this.splashScreen = Splashscreen;
@@ -26,6 +26,7 @@ export class MyApp {
             // Okay, so the platform is ready and our plugins are available.
             // Here you can do any higher level native things you might need.
             StatusBar.styleDefault();
+            this.auth.startupTokenRefresh();
         });
     }
 
@@ -38,9 +39,9 @@ export class MyApp {
     }
 }
 
-ionicBootstrap(MyApp, [HomeService, provide(AuthHttp, {
+ionicBootstrap(MyApp, [HomeService, AuthService, provide(AuthHttp, {
     useFactory: (http) => {
         return new AuthHttp(new AuthConfig({ noJwtError: true }), http);
     },
     deps: [Http]
-}), AuthService]);
+})]);
