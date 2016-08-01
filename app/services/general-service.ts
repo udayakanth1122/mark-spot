@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import {Loading, NavController, Alert} from 'ionic-angular';
 
 @Injectable()
-export class HomeService {
+export class GeneralService {
   currentPositionCoords: any;
 
   constructor() {

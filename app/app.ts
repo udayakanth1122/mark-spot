@@ -1,9 +1,12 @@
 import {Component, provide} from '@angular/core';
 import {Platform, ionicBootstrap} from 'ionic-angular';
 import {StatusBar, Splashscreen} from 'ionic-native';
+
 import {HomePage} from './pages/home-page/home-page';
 import {UserPage} from './pages/user-page/user-page';
-import {HomeService} from './pages/home-page/home-page-service';
+import {ParkingService} from './services/parking/parking-service';
+import {GeneralService} from './services/general-service';
+
 import {Http} from '@angular/http';
 import {AuthHttp, AuthConfig} from 'angular2-jwt';
 import {AuthService} from './services/auth/auth';
@@ -39,7 +42,7 @@ export class MyApp {
     }
 }
 
-ionicBootstrap(MyApp, [HomeService, AuthService, provide(AuthHttp, {
+ionicBootstrap(MyApp, [GeneralService, ParkingService, AuthService, provide(AuthHttp, {
     useFactory: (http) => {
         return new AuthHttp(new AuthConfig({ noJwtError: true }), http);
     },
