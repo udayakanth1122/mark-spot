@@ -1,5 +1,5 @@
 import {Component, provide} from '@angular/core';
-import {Platform, ionicBootstrap} from 'ionic-angular';
+import {App, Platform, ionicBootstrap, MenuController} from 'ionic-angular';
 import {StatusBar, Splashscreen} from 'ionic-native';
 
 import {HomePage} from './pages/home-page/home-page';
@@ -13,17 +13,27 @@ import {AuthService} from './services/auth/auth';
 
 
 @Component({
-    template: '<ion-nav [root]="rootPage">Uday</ion-nav>'
+    templateUrl: 'build/app.html'
 })
 export class MyApp {
 
     private rootPage: any;
     private splashScreen: any;
-    constructor(private platform: Platform, private auth: AuthService) {
+    private pages: any;
+    constructor(private platform: Platform, private auth: AuthService, private sideMenu: MenuController, private app: App) {
+        this.app = app;
         this.rootPage = UserPage;
         this.platform = platform;
         this.splashScreen = Splashscreen;
+        this.sideMenu = sideMenu;
+        this.pages = [
+            {
+                title: 'Home Page',
+                component: HomePage
+            }
+        ];
         this.initializeApp();
+
 
         platform.ready().then(() => {
             // Okay, so the platform is ready and our plugins are available.
@@ -40,6 +50,15 @@ export class MyApp {
             this.splashScreen.hide();
         });
     }
+
+    openPage(page) {
+        this.sideMenu.close()
+        let nav = this.app.getComponent('nav');
+        console.log(page);
+        console.log(page.component);
+        //this.rootPage = page.component;
+    }
+
 }
 
 ionicBootstrap(MyApp, [GeneralService, ParkingService, AuthService, provide(AuthHttp, {

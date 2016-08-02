@@ -180,6 +180,7 @@ var style = [
         ]
     }
 ];
+let options = { timeout: 10000, enableHighAccuracy: true };
 
 @Component({
     templateUrl: 'build/pages/user-page/user-page.html'
@@ -204,59 +205,60 @@ export class UserPage {
         this.loadMap();
     }
     getCurrentPosition() {
-        this.loadMap();
+        this.getAvailableSpots(this.coordsArr[0], true);
+    }
+
+    getAvailableSpots(coords: any, isGetCurrentPosition: boolean) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                this.currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                let mapOptions = {
+                    center: this.currentLocation,
+                    zoom: 15,
+                    panControl: false,
+                    zoomControl: false,
+                    mapTypeControl: false,
+                    streetViewControl: true,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    scrollwheel: false,
+                    styles: style,
+                };
+                this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
+                //get current position coordinates.
+                this.addMarker(true, this.map.getCenter(), "You are here.", '#1D2B64');
+
+                // get all available spots coordinates.
+                if (isGetCurrentPosition != true) {
+                    for (var key in coords.parkingInfo) {
+                        if (coords.parkingInfo[key].isEmpty == true) {
+                            this.addMarker(false, coords.parkingInfo[key], key, '#753192');
+                            var addressRequest = {
+                                latLng: new google.maps.LatLng(coords.parkingInfo[key].lat, coords.parkingInfo[key].lng)
+                            };
+                            this.getAddressAndDistance(addressRequest, this.currentLocation, key);
+                        }
+                    }
+                }
+            },
+            (error) => {
+                this.generalService.errorAlert("Loading Map Error: " + error);
+            }, options);
+
     }
 
     loadMap() {
-
         var loading = this.generalService.presentLoading(4000);
         this.navigate.present(loading);
-        let options = { timeout: 10000, enableHighAccuracy: true };
         this.addressArr = new Array<any>();
         this.parkingService.findAll().subscribe(
             data => {
-                this.coordsArr = data
-                console.log(data);
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        this.currentLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-                        let mapOptions = {
-                            center: this.currentLocation,
-                            zoom: 15,
-                            panControl: false,
-                            zoomControl: false,
-                            mapTypeControl: false,
-                            streetViewControl: true,
-                            mapTypeId: google.maps.MapTypeId.ROADMAP,
-                            scrollwheel: false,
-                            styles: style,
-                        };
-                        this.map = new google.maps.Map(document.getElementById("map"), mapOptions);
-                        //get current position coordinates.
-                        this.addMarker(true, this.map.getCenter(), "You are here.", '#1D2B64');
-
-                        // get all available spots coordinates.
-                        for (var key in this.coordsArr[0].parkingInfo) {
-                            if (this.coordsArr[0].parkingInfo[key].isEmpty == true) {
-                                this.addMarker(false, this.coordsArr[0].parkingInfo[key], this.coordsArr[0].id, '#753192');
-                                var addressRequest = {
-                                    latLng: new google.maps.LatLng(this.coordsArr[0].parkingInfo[key].lat, this.coordsArr[0].parkingInfo[key].lng)
-                                };
-                                this.getAddressAndDistance(addressRequest, this.currentLocation, key);
-                            }
-                        }
-                    },
-                    (error) => {
-                        this.generalService.errorAlert("Loading Map Error: " + error);
-                    }, options);
+                this.coordsArr = data;
+                this.getAvailableSpots(this.coordsArr[0], false);
             },
             err => {
                 this.generalService.errorAlert("Service Error: " + err);
             });
-
     }
-
 
     getAddressAndDistance(addressRequest: any, currentLocation, key: string) {
         let geocoder = new google.maps.Geocoder();
@@ -266,7 +268,7 @@ export class UserPage {
                 if (data[0] != null) {
                     this.addressArr.push({
                         'id': this.coordsArr[0].parkingInfo[key].id,
-                        'address': data[0].formatted_address,
+                        'address': data[0].address_components[0].short_name + " , " + data[0].address_components[1].short_name,
                         'distance': distance,
                         'destinationCoords': [this.coordsArr[0].parkingInfo[key].lat, this.coordsArr[0].parkingInfo[key].lng]
                     });
@@ -329,7 +331,6 @@ export class UserPage {
     }
 
     login() {
-        console.log('login...');
-        this.navigate.push(HomePage);
+      this.navigate.push(HomePage);
     }
 }
