@@ -28,7 +28,7 @@ export class MyApp {
         this.sideMenu = sideMenu;
         this.pages = [
             {
-                title: 'Home Page',
+                title: 'Profile',
                 component: HomePage
             }
         ];
@@ -56,7 +56,7 @@ export class MyApp {
         let nav = this.app.getComponent('nav');
         console.log(page);
         console.log(page.component);
-        //this.rootPage = page.component;
+        this.rootPage = page.component;
     }
 
 }

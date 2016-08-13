@@ -6,6 +6,7 @@ import {LaunchNavigator, LaunchNavigatorOptions} from 'ionic-native';
 import {GeneralService} from '../../services/general-service';
 import {HomePage} from '../home-page/home-page';
 import {ParkingService} from '../../services/parking/parking-service';
+import {AuthService} from '../../services/auth/auth';
 
 enableProdMode();
 var $main_color = '#2d313f',
@@ -194,14 +195,17 @@ export class UserPage {
     currentLocation: any;
     spots: any;
 
-    constructor(private nav: NavController, private generalService: GeneralService, private parkingService: ParkingService) {
-        console.log('calling constructor...')
+    constructor(private nav: NavController,
+        private generalService: GeneralService,
+        private parkingService: ParkingService,
+        private auth: AuthService) {
         this.navigate = nav;
         this.addressArr = new Array<any>();
         this.generalService = generalService;
         this.parkingService = parkingService;
         this.currentLocation = null;
         this.coordsArr = null;
+        this.auth = auth;
         this.loadMap();
     }
     getCurrentPosition() {
@@ -230,6 +234,7 @@ export class UserPage {
                 // get all available spots coordinates.
                 if (isGetCurrentPosition != true) {
                     for (var key in coords.parkingInfo) {
+
                         if (coords.parkingInfo[key].isEmpty == true) {
                             this.addMarker(false, coords.parkingInfo[key], key, '#753192');
                             var addressRequest = {
@@ -247,13 +252,17 @@ export class UserPage {
     }
 
     loadMap() {
+        //console.log(this.auth.user);
         var loading = this.generalService.presentLoading(4000);
         this.navigate.present(loading);
         this.addressArr = new Array<any>();
-        this.parkingService.findAll().subscribe(
+        this.parkingService.findAllSpots().subscribe(
             data => {
+                //console.log(data);
                 this.coordsArr = data;
-                this.getAvailableSpots(this.coordsArr[0], false);
+                for (var key in this.coordsArr) {
+                    this.getAvailableSpots(this.coordsArr[key], false);
+                }
             },
             err => {
                 this.generalService.errorAlert("Service Error: " + err);
@@ -267,7 +276,6 @@ export class UserPage {
             if (status == google.maps.GeocoderStatus.OK) {
                 if (data[0] != null) {
                     this.addressArr.push({
-                        'id': this.coordsArr[0].parkingInfo[key].id,
                         'address': data[0].address_components[0].short_name + " , " + data[0].address_components[1].short_name,
                         'distance': distance,
                         'destinationCoords': [this.coordsArr[0].parkingInfo[key].lat, this.coordsArr[0].parkingInfo[key].lng]
@@ -331,6 +339,37 @@ export class UserPage {
     }
 
     login() {
-      this.navigate.push(HomePage);
+        this.navigate.push(HomePage);
+    }
+
+    markCurrentPosition() {
+        var greeting = this.generalService.greetingAlert("You marked an available parking spot.")
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                console.log(position.coords.latitude + "+" + position.coords.longitude);
+                this.navigate.present(greeting);
+                var property = {
+                    "username": this.auth.user['name'],
+                    "email": this.auth.user['email'],
+                    "parkingInfo": [{
+                        "lat": position.coords.latitude,
+                        "lng": position.coords.longitude,
+                        "date-time": new Date(),
+                        "isEmpty": true
+                    }]
+                };
+                this.parkingService.addSpot(property).subscribe(
+                    data => {
+                        console.log("addspot---> " + data);
+                        //this.getAvailableSpots(this.coordsArr[0], false);
+                        this.navigate.present(greeting);
+                    },
+                    err => {
+                        this.generalService.errorAlert("Service Error: " + err);
+                    });
+            },
+            (error) => {
+                this.generalService.errorAlert("Loading Map Error: " + error);
+            }, options);
     }
 }

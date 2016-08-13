@@ -7,15 +7,33 @@
 @import "../pages/home-page/home-page";
 @import "../pages/user-page/user-page";
 @font-face {
-  font-family: 'bariol-regular';
-  src: url('../fonts/bariol_regular-webfont.eot');
-  src: url('../fonts/bariol_regular-webfont.eot') format('embedded-opentype'), url('../fonts/bariol_regular-webfont.woff2') format('woff2'), url('../fonts/bariol_regular-webfont.woff') format('woff'), url('../fonts/bariol_regular-webfont.ttf') format('truetype'), url('../fonts/bariol_regular-webfont.svg') format('svg');
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'bariol-regular';
+    src: url('../fonts/bariol_regular-webfont.eot');
+    src: url('../fonts/bariol_regular-webfont.eot') format('embedded-opentype'), url('../fonts/bariol_regular-webfont.woff2') format('woff2'), url('../fonts/bariol_regular-webfont.woff') format('woff'), url('../fonts/bariol_regular-webfont.ttf') format('truetype'), url('../fonts/bariol_regular-webfont.svg') format('svg');
+    font-weight: normal;
+    font-style: normal;
 }
 body {
-  font-family: 'bariol-regular';
+    font-family: 'bariol-regular';
 }
 ion-label {
-  word-wrap: break-word;
+    word-wrap: break-word;
+}
+.toolbar[paradise] .toolbar-background,
+.user-page,
+ion-navbar.toolbar {
+    min-height: 80px !important;
+    background: #42275a;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #42275a , #734b6d);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #42275a , #734b6d);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background-position: 50% 50%;
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.bar-button-default,
+.toolbar-title {
+    color: white;
+    font-weight: bold;
 }

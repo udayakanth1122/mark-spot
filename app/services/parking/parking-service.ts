@@ -7,7 +7,17 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/Rx';
 
 let favorites = [],
-    propertiesURL = 'https://gentle-inlet-96540.herokuapp.com' + '/userInfo/parkingSpots';
+    allParkingSpotsURL = 'https://gentle-inlet-96540.herokuapp.com/userInfo/api/allParkingSpots',
+    addParkingSpotURL = 'https://gentle-inlet-96540.herokuapp.com/userInfo/api/addParkingSpot';
+let headers = new Headers({
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Headers': 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Max-Age': '86400',
+    'Access-Control-Allow-Credentials': false,
+
+});
 
 @Injectable()
 export class ParkingService {
@@ -15,20 +25,27 @@ export class ParkingService {
     constructor(private http: Http) {
         this.http = http;
     }
-    findAll() {
-        return this.http.get(propertiesURL)
+    findAllSpots() {
+        return this.http.get(allParkingSpotsURL)
             .map(res => res.json())
             .catch(this.handleError);
     }
 
-    // favorite(property) {
-    //     let body = JSON.stringify(property);
-    //     let headers = new Headers({ 'Content-Type': 'application/json' });
-    //     let options = new RequestOptions({ headers: headers });
-    //     return this.http.post(favoritesURL, body, options)
-    //         .map(res => res.json())
-    //         .catch(this.handleError);
-    // }
+    addSpot(property) {
+        let body = JSON.stringify(property);
+        let options = new RequestOptions({ headers: headers });
+        return this.http.post(addParkingSpotURL, body, { headers: headers })
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
+
+    updateSpot(property) {
+        let body = JSON.stringify(property);
+        let options = new RequestOptions({ headers: headers });
+        return this.http.post(addParkingSpotURL, JSON.stringify({ firstName: 'Joe', lastName: 'Smith' }), options)
+            .map(res => res.json())
+            .catch(this.handleError);
+    }
 
     handleError(error) {
         console.error(error);
