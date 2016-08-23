@@ -1,10 +1,10 @@
 <ion-menu [content]="content">
-    <ion-navbar class="bar-positive theme" paradise>
+    <ion-toolbar class="bar-positive theme" leftparadise>
         <ion-title align-title="center">Mark-Spot</ion-title>
-    </ion-navbar>
-    <ion-content padding class="user-page">
+    </ion-toolbar>
+    <ion-content>
         <ion-list>
-            <ion-item *ngFor="let p of pages" (click)="openPage(p)" [ngStyle]="{'background': '#F8CDDA'}">
+            <ion-item *ngFor="let p of pages" (click)="openPage(p)">
                 {{p.title}}
             </ion-item>
         </ion-list>

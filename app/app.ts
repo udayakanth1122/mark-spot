@@ -28,6 +28,10 @@ export class MyApp {
         this.sideMenu = sideMenu;
         this.pages = [
             {
+                title: 'Show Spots',
+                component: UserPage
+            },
+            {
                 title: 'Profile',
                 component: HomePage
             }
@@ -54,8 +58,6 @@ export class MyApp {
     openPage(page) {
         this.sideMenu.close()
         let nav = this.app.getComponent('nav');
-        console.log(page);
-        console.log(page.component);
         this.rootPage = page.component;
     }
 

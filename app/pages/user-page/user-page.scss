@@ -1,11 +1,20 @@
 .home {
-  .scroll {
-    height: 100%;
-  }
+    .scroll {
+        height: 100%;
+    }
 }
 ion-item #map {
-  height: 50% !important;
+    height: 50% !important;
 }
 .icon-color {
-  color: #753192;
+    color: #753192;
+}
+[fab-right] {
+    right: 24px;
+}
+[fab-top] {
+    top: 22px;
+}
+[fab-left] {
+    left: 24px;
 }

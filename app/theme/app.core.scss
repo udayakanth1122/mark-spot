@@ -32,6 +32,18 @@ ion-navbar.toolbar {
     background-position: 50% 50%;
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
+
+.toolbar[leftparadise] .toolbar-background {
+  min-height: 80px !important;
+  background:  #734b6d;
+  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #734b6d, #42275a);
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #734b6d, #42275a);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-position: 50% 50%;
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
 .bar-button-default,
 .toolbar-title {
     color: white;

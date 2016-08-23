@@ -334,8 +334,20 @@ export class UserPage {
 
         setTimeout(() => {
             console.log('Async operation has ended');
+            this.parkingService.findAllSpots().subscribe(
+                data => {
+                    //console.log(data);
+                    this.coordsArr = data;
+                    for (var key in this.coordsArr) {
+                        this.getAvailableSpots(this.coordsArr[key], false);
+                    }
+                },
+                err => {
+                    this.generalService.errorAlert("Service Error: " + err);
+                });
             refresher.complete();
-        }, 2000);
+        }, 3500);
+
     }
 
     login() {
@@ -349,8 +361,8 @@ export class UserPage {
                 console.log(position.coords.latitude + "+" + position.coords.longitude);
                 this.navigate.present(greeting);
                 var property = {
-                    "username": this.auth.user['name'],
-                    "email": this.auth.user['email'],
+                    "username": this.auth.user['name'] || null,
+                    "email": this.auth.user['email'] || null,
                     "parkingInfo": [{
                         "lat": position.coords.latitude,
                         "lng": position.coords.longitude,
