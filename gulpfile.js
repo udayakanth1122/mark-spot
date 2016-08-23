@@ -1,3 +1,16 @@
+import { APP_DIR, TEST_DIR, TYPINGS_DIR, TEST_DEST } from './test/config';
+import { join }          from 'path';
+import * as runSequence  from 'run-sequence';
+import * as chalk        from 'chalk';
+import * as del          from 'del';
+import * as gulp         from 'gulp';
+import * as karma        from 'karma';
+import * as loadPlugins  from 'gulp-load-plugins';
+import * as ts           from 'gulp-typescript';
+import * as tslint       from 'gulp-tslint';
+import * as util         from 'gulp-util';
+
+
 var gulp = require('gulp'),
   gulpWatch = require('gulp-watch'),
   del = require('del'),
