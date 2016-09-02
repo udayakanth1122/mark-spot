@@ -1,6 +1,3 @@
-// Karma configuration
-// Generated on Wed Jul 15 2015 09:44:02 GMT+0200 (Romance Daylight Time)
-
 module.exports = function(config) {
   'use strict';
   config.set({
@@ -10,38 +7,44 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'browserify'],
 
     // list of files / patterns to load in the browser
     files: [
-      'node_modules/zone.js/dist/zone-microtask.js',
-      'node_modules/zone.js/dist/long-stack-trace-zone.js',
+      'node_modules/es6-shim/es6-shim.js',        // TypeError: undefined is not a constructor (evaluating 'new exports.Map()')
+      'node_modules/reflect-metadata/Reflect.js', // 'Uncaught reflect-metadata shim is required when using class decorators'
+      'node_modules/zone.js/dist/zone.js',        // Zone.js dependencies (Zone undefined)
       'node_modules/zone.js/dist/jasmine-patch.js',
-      'node_modules/es6-module-loader/dist/es6-module-loader.js',
-      'node_modules/traceur/bin/traceur.js',
-      'node_modules/systemjs/dist/system.src.js',
-      'node_modules/reflect-metadata/Reflect.js',
-
-      { pattern: 'node_modules/angular2/**/*.js', included: false, watched: false },
-      { pattern: 'node_modules/ionic-angular/**/*.js', included: false, watched: false },
-      { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
-      { pattern: 'www/build/test/**/*.js', included: false, watched: true },
-      { pattern: 'www/build/test/**/*.html', included: false, served: true},
-
-      'test/test-main.js'
+      'node_modules/zone.js/dist/async-test.js',
+      'node_modules/zone.js/dist/fake-async-test.js',
+      'app/**/*.spec.ts',
+      {pattern: 'node_modules/reflect-metadata/Reflect.js.map', included: false, served: true}, // 404 on the same
+      {pattern: 'www/build/**/*.html', included: false},
     ],
 
     // list of files to exclude
     exclude: [
       'node_modules/angular2/**/*_spec.js',
-      'node_modules/ionic-angular/**/*spec*',
-      'node_modules/ionic-angular/decorators/app.js'
+      'node_modules/ionic-angular/**/*spec*'
     ],
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'www/build/test/**/!(*.spec|*.stub).js': 'coverage'
+      '**/*.ts': ['browserify']
+    },
+
+    browserify: {
+      debug: true,
+      transform: [
+        ['browserify-istanbul', {
+          instrumenter: require('isparta'),
+          ignore: ['**/*.spec.ts','**/*.d.ts', '**/index.ts', '**/mocks.ts', '**/*.mock.ts'],
+        }]
+      ],
+      plugin: [
+        ['tsify']
+      ]
     },
 
     // options on how to report coverage:
@@ -55,7 +58,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['mocha','coverage'],
+    reporters: ['mocha', 'coverage'],
 
     // web server port
     port: 9876,
@@ -66,10 +69,7 @@ module.exports = function(config) {
     // GOTCHA -- Karma proxies _everything_ through base first..
     //           Also any files you want to serve need to be in the files array above with serverd: true
     proxies: {
-      // allows us to keep test code separate from app code and still have the references work
-      '/base/node_modules/ionic-angular/decorators/app.js': '/base/www/build/test/app.stub.js', // stub out Ionic's @App decorator
-      '/base/www/build/app': '/base/www/build/test',
-      '/build': '/base/www/build/test'
+      '/build': '/base/www/build'
     },
 
     // level of logging
@@ -85,26 +85,17 @@ module.exports = function(config) {
       'PhantomJS',
     ],
 
-    customLaunchers: {
-      Chrome_travis_ci: {
-        base: 'Chrome',
-        flags: ['--no-sandbox']
-      }
-    },
+    // https://github.com/lathonez/clicker/issues/82
+    // try increasing this value if you see the error "Disconnected (1 times), because no message in 30000 ms."
+    browserNoActivityTimeout: 30000,
 
-    // Continuous Integration mode
-    // if true, Karma captures browsers, runs the tests and exits
-    singleRun: true
+    customContextFile: "test/karma-static/context.html",
+
+    customDebugFile: "test/karma-static/debug.html",
+
   });
 
-  if (process.env.APPVEYOR) {
-    config.browsers = ['IE'];
-    config.singleRun = true;
-    config.browserNoActivityTimeout = 90000; // Note: default value (10000) is not enough
-  }
-
   if (process.env.TRAVIS || process.env.CIRCLECI) {
-    config.browsers = ['Chrome_travis_ci'];
-    config.singleRun = true;
+    config.browsers = ['Chrome', 'PhantomJS'];
   }
 };

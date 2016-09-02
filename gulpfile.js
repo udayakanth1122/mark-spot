@@ -1,21 +1,8 @@
-import { APP_DIR, TEST_DIR, TYPINGS_DIR, TEST_DEST } from './test/config';
-import { join }          from 'path';
-import * as runSequence  from 'run-sequence';
-import * as chalk        from 'chalk';
-import * as del          from 'del';
-import * as gulp         from 'gulp';
-import * as karma        from 'karma';
-import * as loadPlugins  from 'gulp-load-plugins';
-import * as ts           from 'gulp-typescript';
-import * as tslint       from 'gulp-tslint';
-import * as util         from 'gulp-util';
-
-
 var gulp = require('gulp'),
-  gulpWatch = require('gulp-watch'),
-  del = require('del'),
-  runSequence = require('run-sequence'),
-  argv = process.argv;
+    gulpWatch = require('gulp-watch'),
+    del = require('del'),
+    runSequence = require('run-sequence'),
+    argv = process.argv;
 
 
 /**
@@ -32,6 +19,14 @@ gulp.task('build:before', ['build']);
 var shouldWatch = argv.indexOf('-l') > -1 || argv.indexOf('--livereload') > -1;
 gulp.task('run:before', [shouldWatch ? 'watch' : 'build']);
 
+var bariolFont = function(options) {
+    options.src = 'app/fonts/**/*.+(ttf|woff|woff2)';
+    options.dest = options.dest || 'www/build/fonts';
+
+    return gulp.src(options.src)
+        .pipe(gulp.dest(options.dest));
+};
+
 /**
  * Ionic Gulp tasks, for more information on each see
  * https://github.com/driftyco/ionic-gulp-tasks
@@ -40,8 +35,6 @@ gulp.task('run:before', [shouldWatch ? 'watch' : 'build']);
  * changes, but you are of course welcome (and encouraged) to customize your
  * build however you see fit.
  */
-
-
 var buildBrowserify = require('ionic-gulp-browserify-typescript');
 var buildSass = require('ionic-gulp-sass-build');
 var copyHTML = require('ionic-gulp-html-copy');
@@ -51,55 +44,92 @@ var tslint = require('ionic-gulp-tslint');
 
 var isRelease = argv.indexOf('--release') > -1;
 
-var bariolFont = function(options) {
-  options.src = 'app/fonts/**/*.+(ttf|woff|woff2)';
-  options.dest = options.dest || 'www/build/fonts';
-
-  return gulp.src(options.src)
-    .pipe(gulp.dest(options.dest));
-};
-
-
 gulp.task('watch', ['clean'], function(done) {
-  runSequence(
-    ['sass', 'html', 'fonts', 'scripts', 'bariolFont'],
-    function() {
-      gulpWatch('app/**/*.scss', function() {
-        gulp.start('sass');
-      });
-      gulpWatch('app/**/*.html', function() {
-        gulp.start('html');
-      });
-      buildBrowserify({
-        watch: true
-      }).on('end', done);
-    }
-  );
+    runSequence(
+        ['sass', 'html', 'fonts', 'scripts', 'bariolFont'],
+        function() {
+            gulpWatch('app/**/*.scss', function() {
+                gulp.start('sass');
+            });
+            gulpWatch('app/**/*.html', function() {
+                gulp.start('html');
+            });
+            buildBrowserify({
+                watch: true
+            }).on('end', done);
+        }
+    );
 });
 
 gulp.task('build', ['clean'], function(done) {
-  runSequence(
-    ['sass', 'html', 'fonts', 'scripts', 'bariolFont'],
-    function() {
-      buildBrowserify({
-        minify: isRelease,
-        browserifyOptions: {
-          debug: !isRelease
-        },
-        uglifyOptions: {
-          mangle: false
+    runSequence(
+        ['sass', 'html', 'fonts', 'scripts', 'bariolFont'],
+        function() {
+            buildBrowserify({
+                minify: isRelease,
+                browserifyOptions: {
+                    debug: !isRelease
+                },
+                uglifyOptions: {
+                    mangle: false
+                }
+            }).on('end', done);
         }
-      }).on('end', done);
-    }
-  );
+    );
 });
 
 gulp.task('sass', buildSass);
 gulp.task('html', copyHTML);
 gulp.task('fonts', copyFonts);
-gulp.task('scripts', copyScripts);
+gulp.task('scripts', ['configure-environment'], copyScripts);
 gulp.task('bariolFont', bariolFont);
 gulp.task('clean', function() {
-  return del('www/build');
+    return del('www/build');
 });
 gulp.task('lint', tslint);
+
+gulp.task('copy-config-xml', function() {
+    var env = process.env.ENV || 'dev';
+    var opts = {
+        src: 'config/' + env + '/config.xml',
+        dest: './',
+        onComplete: function() {
+            console.log('copy-config-xml(' + env.toUpperCase() + '): copied to ./');
+        },
+        onError: function(err) {
+            console.error(err.toString());
+            this.emit('end');
+        }
+    };
+
+    return gulp.src(opts.src)
+        .pipe(gulp.dest(opts.dest))
+        .on('end', opts.onComplete)
+        .on('error', opts.onError);
+});
+
+gulp.task('copy-config-ts', function() {
+    var env = process.env.ENV || 'dev';
+    var opts = {
+        src: 'config/' + env + '/config.ts',
+        dest: './config',
+        onComplete: function() {
+            console.log('copy-config-ts(' + env.toUpperCase() + '): copied to ./config');
+        },
+        onError: function(err) {
+            console.error(err.toString());
+            this.emit('end');
+        }
+    };
+    return gulp.src(opts.src)
+        .pipe(gulp.dest(opts.dest))
+        .on('end', opts.onComplete)
+        .on('error', opts.onError);
+});
+
+gulp.task('configure-environment', function(done) {
+    return runSequence(
+        ['copy-config-ts', 'copy-config-xml'],
+        done
+    );
+});

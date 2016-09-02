@@ -6,6 +6,7 @@ import {HomePage} from './pages/home-page/home-page';
 import {UserPage} from './pages/user-page/user-page';
 import {ParkingService} from './services/parking/parking-service';
 import {GeneralService} from './services/general-service';
+import {Utils} from './services/utils';
 
 import {Http} from '@angular/http';
 import {AuthHttp, AuthConfig} from 'angular2-jwt';
@@ -63,7 +64,7 @@ export class MyApp {
 
 }
 
-ionicBootstrap(MyApp, [GeneralService, ParkingService, AuthService, provide(AuthHttp, {
+ionicBootstrap(MyApp, [GeneralService, ParkingService, AuthService, Utils,  provide(AuthHttp, {
     useFactory: (http) => {
         return new AuthHttp(new AuthConfig({ noJwtError: true }), http);
     },
