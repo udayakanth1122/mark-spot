@@ -58,13 +58,13 @@ export class MyApp {
 
     openPage(page) {
         this.sideMenu.close()
-        let nav = this.app.getComponent('nav');
+        //let nav = this.app.getComponent('nav');
         this.rootPage = page.component;
     }
 
 }
 
-ionicBootstrap(MyApp, [GeneralService, ParkingService, AuthService, Utils,  provide(AuthHttp, {
+ionicBootstrap(MyApp, [GeneralService, ParkingService, AuthService, Utils, provide(AuthHttp, {
     useFactory: (http) => {
         return new AuthHttp(new AuthConfig({ noJwtError: true }), http);
     },

@@ -25,7 +25,8 @@ module.exports = function(config) {
     // list of files to exclude
     exclude: [
       'node_modules/angular2/**/*_spec.js',
-      'node_modules/ionic-angular/**/*spec*'
+      'node_modules/ionic-angular/**/*spec*',
+      'app/services/auth/*.js'
     ],
 
     // preprocess matching files before serving them to the browser
