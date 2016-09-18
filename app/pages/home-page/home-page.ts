@@ -3,6 +3,7 @@ import {Loading, NavController} from 'ionic-angular';
 import {UserPage} from '../user-page/user-page';
 import {Geolocation} from 'ionic-native';
 import {GeneralService} from '../../services/general-service';
+import {AuthService} from '../../services/auth/auth';
 
 @Component({
   templateUrl: 'build/pages/home-page/home-page.html'
@@ -13,7 +14,7 @@ export class HomePage {
   map: any;
   private generalService: GeneralService;
 
-  constructor(nav: NavController, generalService: GeneralService) {
+  constructor(nav: NavController, generalService: GeneralService, private auth: AuthService) {
     this.navigate = nav;
     this.map = null;
     this.generalService = generalService;
